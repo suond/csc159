@@ -36,7 +36,7 @@ int DeQ(q_t *p) { // return -1 if q is empty
 }
 void checkWait() {
 	int temp_pid;
-	q_t temp_q	
+	q_t temp_q;	
 	temp_pid = DeQ(&sleep_q);
 	MyBzero((char *) &temp_q, sizeof (q_t) );
 		while (temp_pid !=-1){

@@ -95,7 +95,6 @@ void KernelMain(TF_t *TF_ptr) {
 	pcb[running_pid].TF_ptr = TF_ptr;
 	switch(TF_ptr ->intr_id) {
 	    case(TIMER_INTR):
-		//cons_printf("stufffdds \n");
 	       TimerISR();
 		OS_clock++;
 		checkWait();
@@ -116,7 +115,6 @@ void KernelMain(TF_t *TF_ptr) {
       switch(key) {
          case ('s') :
             new_pid = DeQ(&free_q);
-		//cons_printf("stufffdds \n");
             if(new_pid == -1)
                cons_printf("Panic: no more available process ID left!\n");
 		

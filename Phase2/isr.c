@@ -88,7 +88,7 @@ void GetPidISR(){
 }
 void Sleep_ISR(int sleep_secs) {
     int wake_time;
-    wake_time = (OS_clock + sleep_secs * 100);
+    wake_time = (sleep_secs*100) + OS_clock;
     pcb[running_pid].wake_time = wake_time;
     EnQ(running_pid, &sleep_q);
     pcb[running_pid].state = SLEEP;

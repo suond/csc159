@@ -23,7 +23,6 @@ void IdleProc() {
 void UserProc() {
 
    int sec;
-   int i;
    for (;;){
 	sec = (GetPid()%3)+1;
 	cons_printf("%d ", GetPid());

@@ -1,0 +1,14 @@
+// isr.h, 159
+
+#ifndef _ISR_H_
+#define _ISR_H_
+
+void TimerISR();
+void GetPidISR();
+void Sleep_ISR(int);
+void StartProcISR(int,int);
+int SemGetISR(int);
+void SemPostISR(int);
+void SemWaitISR(int);
+
+#endif

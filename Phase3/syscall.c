@@ -25,17 +25,17 @@ void StartProc(func_ptr_t ptr) {        // has input, no return
 
    asm("movl %0, %%eax; int $50" // CPU inst
        :                         // no output from asm("...")
-       : "g" (ptr)           // input into asm("...")
+       : "g" ((int)ptr)           // input into asm("...")
        : "%eax");                // will get pushed before asm("..."), and popped after
 }
 
 int SemGet(int semNum) {    //input and return               
    int sem_id;
 
-   asm("int $51; movl %%eax, %0" // CPU inst
-       : "=g" (semNum)              // output from asm("...")
-       :                         // no input into asm("...")
-       : "%eax");                // will get pushed before asm("..."), and popped after
+   asm("movl %1, %%eax; int $51; movl %%ebx, %0" // CPU inst
+       : "=g" (sem_id)              // output from asm("...")
+       : "g" (semNum)                      // no input into asm("...")
+       : "%eax","%ebx");                // will get pushed before asm("..."), and popped after
 
    return sem_id;
 }

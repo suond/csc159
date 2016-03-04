@@ -9,30 +9,25 @@
 void StartProcISR(int new_pid, int func_addr) {
 	MyBzero( (char*) &pcb[new_pid], sizeof (pcb_t));
 	pcb[new_pid].state= READY;
-
+	
 	if(new_pid !=0 ) {
 	  EnQ(new_pid, &ready_q);
 	}
-	
+	MyBzero( (char*) &proc_stack[new_pid], PROC_STACK_SIZE);
 	pcb[new_pid].TF_ptr =(TF_t*) &proc_stack[new_pid][PROC_STACK_SIZE]; 
 	pcb[new_pid].TF_ptr--;	
 	
 	pcb[new_pid].TF_ptr->eflags = EF_DEFAULT_VALUE|EF_INTR; // set INTR flag
-	//pcb[new_pid].TF_ptr
    	pcb[new_pid].TF_ptr->cs = get_cs();                     // standard fair
    	pcb[new_pid].TF_ptr->ds = get_ds();                     // standard fair
    	pcb[new_pid].TF_ptr->es = get_es();                     // standard fair
    	pcb[new_pid].TF_ptr->fs = get_fs();                     // standard fair
    	pcb[new_pid].TF_ptr->gs = get_gs();                     // standard fair
+	
 
-
-	if (new_pid == 0) {
-		pcb[new_pid].TF_ptr->eip = (unsigned int)IdleProc;
-	}else {
-		pcb[new_pid].TF_ptr->eip = func_addr;
-	}
+	pcb[new_pid].TF_ptr->eip = (unsigned int)func_addr;
+	
 }
-
 
 void TimerISR() {
  
@@ -76,10 +71,12 @@ int SemGetISR(int limit){
 	int sem_id;
 	sem_id = DeQ(&sem_q);
 	if(sem_id == -1){
+		pcb[running_pid].TF_ptr->ebx= -1;
 		return -1;
         }
 	MyBzero((char*)&sem[sem_id].wait_q,sizeof(q_t));
 	sem[sem_id].limit = limit;
+	pcb[running_pid].TF_ptr->ebx= sem_id;
 	return sem_id;
 }
 

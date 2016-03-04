@@ -34,12 +34,12 @@ int main() {
    InitKernelData();
    InitKernelControl();
    pid = DeQ(&free_q);
-   StartProcISR(0,(int)IdleProc);
-
-   //StartProcISR(1,(int)InitProc);
+   StartProcISR(pid,(unsigned int)IdleProc);
    
+   pid = DeQ(&free_q);
+   StartProcISR(pid,(unsigned int)InitProc);
    LoadRun(pcb[0].TF_ptr);
-
+   
    return 0;   // not reached, but compiler needs it for syntax
 }
 

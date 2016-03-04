@@ -10,9 +10,10 @@ void StartProcISR(int new_pid, int func_addr) {
 	MyBzero( (char*) &pcb[new_pid], sizeof (pcb_t));
 	pcb[new_pid].state= READY;
 	
-	if(new_pid !=0 ) {
+	if(new_pid > 0 ) {
 	  EnQ(new_pid, &ready_q);
 	}
+	
 	MyBzero( (char*) &proc_stack[new_pid], PROC_STACK_SIZE);
 	pcb[new_pid].TF_ptr =(TF_t*) &proc_stack[new_pid][PROC_STACK_SIZE]; 
 	pcb[new_pid].TF_ptr--;	
@@ -25,7 +26,7 @@ void StartProcISR(int new_pid, int func_addr) {
    	pcb[new_pid].TF_ptr->gs = get_gs();                     // standard fair
 	
 
-	pcb[new_pid].TF_ptr->eip = (unsigned int)func_addr;
+	pcb[new_pid].TF_ptr->eip = (unsigned int) func_addr;
 	
 }
 

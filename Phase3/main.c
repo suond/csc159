@@ -35,9 +35,10 @@ int main() {
    InitKernelControl();
    pid = DeQ(&free_q);
    StartProcISR(pid,(unsigned int)IdleProc);
-   
    pid = DeQ(&free_q);
    StartProcISR(pid,(unsigned int)InitProc);
+   //running_pid = -1;
+   //Scheduler();
    LoadRun(pcb[0].TF_ptr);
    
    return 0;   // not reached, but compiler needs it for syntax
@@ -114,6 +115,7 @@ void KernelMain(TF_t *TF_ptr) {
 		   TF_ptr->eax = running_pid;
 		   break;
 		case(STARTPROC_INTR):
+		   new_pid = DeQ(&free_q);
 		   StartProcISR(new_pid,TF_ptr->eax);
 		   break;
 		case(SEMWAIT_INTR):

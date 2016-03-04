@@ -50,7 +50,7 @@ void SemWait(int sem_id) {        // has input, no return
 
 void SemPost(int sem_id) {        // has input, no return
 
-   asm("movl %0, %%eax; int $49" // CPU inst
+   asm("movl %0, %%eax; int $53" // CPU inst
        :                         // no output from asm("...")
        : "g" (sem_id)           // input into asm("...")
        : "%eax");                // will get pushed before asm("..."), and popped after

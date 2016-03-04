@@ -48,6 +48,9 @@ ENTRY(GetPidEntry)
 ENTRY(SleepEntry)
 	pushl $SLEEP_INTR
 	jmp CompleteTFenterKernel
+ENTRY(StartProcEntry)
+	pushl $STARTPROC_INTR
+	jmp CompleteTFenterKernel
 
 ENTRY(SemGetEntry)
 	pushl $SEMGET_INTR
@@ -61,6 +64,4 @@ ENTRY(SemPostEntry)
 	pushl $SEMPOST_INTR
 	jmp CompleteTFenterKernel
 
-ENTRY(StartProcEntry)
-	pushl $STARTPROC_INTR
-	jmp CompleteTFenterKernel
+

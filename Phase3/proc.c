@@ -25,14 +25,12 @@ void Consumer(){
 	
 	int i;
 	while(1){
-		
 		SemWait(product_sem_id);
-		
-			cons_printf("Consumer %d is consuming...\n", GetPid());
+		cons_printf("\n --(%d) consuming...", GetPid());
 			product_count -= 1;
-			for(i=0;i<1666000;i++) IO_DELAY(); // delay for about 1 sec
-			for(i=0;i<1666000;i++) IO_DELAY(); // delay for about 1 sec
-			cons_printf("Product count is now %d\n", product_count);
+			for(i=0;i<3333333;i++) IO_DELAY(); // delay for about 2 sec
+			
+			cons_printf(" product count is now %d", product_count);
 
 		
 		SemPost(product_sem_id);
@@ -42,15 +40,12 @@ void Consumer(){
 void Producer(){
 	
 	int i;
-	//cons_printf("testP");
 	while(1){
 		SemWait(product_sem_id);
-		
-		cons_printf("\n++ (%d) producing... ", product_sem_id);
-		for(i=0;i<1666000;i++) IO_DELAY(); // delay for about 1 sec
-		for(i=0;i<1666000;i++) IO_DELAY(); // delay for about 1 sec
+		cons_printf("\n++ (%d) producing... ", GetPid());
+		for(i=0;i<3333333;i++) IO_DELAY(); // delay for about 3 sec
 		product_count += 1;
-		cons_printf("Product count is now %d\n", product_count);
+		cons_printf(" product count is now %d", product_count);
 		SemPost(product_sem_id);
 		
 	}
@@ -70,7 +65,6 @@ void InitProc(){
 			switch(key)
 			{
 				case('p'):
-					//cons_printf("test");
 					StartProc(Producer);
 					break;
 				case('c'):

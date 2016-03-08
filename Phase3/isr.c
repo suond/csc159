@@ -61,14 +61,7 @@ void Sleep_ISR(int sleep_secs) {
 }
 
 int SemGetISR(int limit){
-	//alloc semid from sem_q
-	// if -1
-		//put -1 into ebx of tf
-		//return -1
-	//clear sem[semId]
-	//set sem[semId]
-	//limit = limit
-	//return sem_id
+	
 	int sem_id;
 	sem_id = DeQ(&sem_q);
 	if(sem_id == -1){
@@ -90,6 +83,7 @@ void SemWaitISR(int sem_id){
 	else{
 		pcb[running_pid].state = WAIT;
 		EnQ(running_pid, &sem[sem_id].wait_q);
+		cons_printf("\n SemWaitISR(): blocking proc %d <--",running_pid);
 		running_pid = -1;
 	}
 	
@@ -101,6 +95,7 @@ void SemPostISR(int sem_id){
 		int pid = DeQ(&sem[sem_id].wait_q);
 		pcb[pid].state = READY;
 		EnQ(pid, &ready_q);
+		cons_printf("\n SemPostISR(): freeing proc %d <--",pid);
 	}
 	else{
 		sem[sem_id].limit++;

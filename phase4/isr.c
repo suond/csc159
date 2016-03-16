@@ -5,6 +5,7 @@
 #include "toolfunc.h"
 #include "extern.h"
 #include "proc.h" 
+#include "syscall.h"
 
 void StartProcISR(int new_pid, int func_addr) {
 	MyBzero( (char*) &pcb[new_pid], sizeof (pcb_t));
@@ -105,7 +106,7 @@ void SemPostISR(int sem_id){
 }
 
 void MsgSndISR(int msg_addr) {
-	msg_t *incoming_msg_ptr;
+	msg_t *incoming_msg_ptr, *destination;
 	int msg_q_id, freed_pid;
 	incoming_msg_ptr = (msg_t *)msg_addr;
 	msg_q_id = incoming_msg_ptr->recipient;
@@ -119,8 +120,10 @@ void MsgSndISR(int msg_addr) {
 		freed_pid = DeQ(&msg_q[msg_q_id].wait_q);
 		pcb[freed_pid].state= READY;
 		EnQ(freed_pid, &ready_q);
-		pcb[freed_pid].TF_ptr->eax = (int)incoming_msg_ptr;
-		cons_printf("\n MsgSndISR(): freeing proc %d <--",freed_pid);
+		destination = (msg_t*)pcb[freed_pid].TF_ptr->eax;
+		memcpy((char *) destination, incoming_msg_ptr, sizeof(msg_t));
+		cons_printf("\n! MsgSndISR(): FREEING proc %d <-- !\n",freed_pid);
+		
 			}
 }
 
@@ -135,9 +138,9 @@ void MsgRcvISR(int msg_addr) {
 		*receiving_msg_ptr = *queued_msg_ptr;
 	
 	}else {
-		pcb[running_pid].state = WAIT;
 		EnQ( running_pid, &msg_q[msg_q_id].wait_q);
-		cons_printf("\n MsgRcv(): BLOCKING proc %d <--",running_pid);
+		pcb[running_pid].state = WAIT;
+		cons_printf("\n! MsgRcvISR(): BLOCKING proc %d <-- !\n",running_pid);
 		running_pid=-1;
 	}
 }

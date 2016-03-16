@@ -30,7 +30,7 @@ void Consumer(){
 		my_msg.recipient = 0;
 		MsgRcv(&my_msg);
 		cons_printf("\n-- Consumer (%d) consuming data %d...\n", my_pid,my_msg.data);
-		for(i=0;i<3333333;i++) IO_DELAY(); // delay for about 3 sec
+		for(i=0;i<3333333;i++) IO_DELAY(); // delay for about 2 sec
 		
 	}
 }

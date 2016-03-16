@@ -21,7 +21,7 @@ pcb_t pcb[MAX_PROC_NUM];    // process table
 char proc_stack[MAX_PROC_NUM][PROC_STACK_SIZE]; // runtime stacks of processes
 sem_t sem[Q_LEN]; //array of semaphores
 typedef void (* func_ptr)();
-struct i386_gate *IDT_ptr;
+struct i386_gate *IDT_ptr; //points to the start of 356 (i386_gate)
 msg_q_t msg_q[MAX_PROC_NUM];
 
 //for testing only
@@ -46,8 +46,8 @@ int main() {
 }
 
 void SetEntry(int entry_num, func_ptr_t func_ptr) {
-	struct i386_gate *gateptr = &IDT_ptr[entry_num];
-	fill_gate(gateptr, (int) func_ptr, get_cs(), ACC_INTR_GATE,0);
+	struct i386_gate *gateptr = &IDT_ptr[entry_num]; //gets address of this particular idt entry
+	fill_gate(gateptr, (int) func_ptr, get_cs(), ACC_INTR_GATE,0); //builds a valid interrupt gate in the above idt entry
 
 }
 void InitKernelData() {
@@ -73,7 +73,7 @@ void InitKernelData() {
 }
 
 void InitKernelControl() {
-	IDT_ptr = get_idt_base();
+	IDT_ptr = get_idt_base(); // locate where flames placed the idt table 
 	SetEntry(32, TimerEntry);
 	SetEntry(48, GetPidEntry);	
 	SetEntry(49, SleepEntry);
@@ -83,7 +83,7 @@ void InitKernelControl() {
 	SetEntry(53, SemPostEntry);
 	SetEntry(54, MsgSndEntry);
 	SetEntry(55, MsgRcvEntry);
-	outportb(0x21, ~0x01);  //masking the PIC
+	outportb(0x21, ~0x01);  //masking the PIC = 1111_1110 0 bit = enabled !0x00 would be all 1s
 	
 }
 

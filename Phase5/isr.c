@@ -118,8 +118,7 @@ void MsgSndISR(int msg_addr) {
 		pcb[freed_pid].state= READY;
 		EnQ(freed_pid, &ready_q);
 		destination = (msg_t*)pcb[freed_pid].TF_ptr->eax;
-		memcpy((char *) destination, incoming_msg_ptr, sizeof(msg_t));
-		
+		*destination = *incoming_msg_ptr;
 	}
 }
 

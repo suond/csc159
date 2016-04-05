@@ -21,11 +21,6 @@ void IdleProc() {
    	}
 }
 
-void Consumer(){
-}
-
-void Producer(){
-}
 
 void PrintDriver(){
 	int i, code;
@@ -46,12 +41,12 @@ void PrintDriver(){
 		p = msg.data;
 		
 		while(*p){
+			SemWait(printing_semaphore);
 			outportb(LPT1_BASE+LPT_DATA, *p);
 			code = inportb(LPT1_BASE+LPT_CONTROL);
 			outportb(LPT1_BASE+LPT_CONTROL, code|PC_STROBE);
 			for(i=0; i<50; i++)IO_DELAY();
 			outportb(LPT1_BASE+LPT_CONTROL, code);
-			SemWait(printing_semaphore);
 			
 			p++;
 		}
@@ -63,7 +58,7 @@ void InitProc(){
 	int i;
 	msg_t msg;
 	msg.recipient = 2;
-	MyStrcpy(msg.data,"\nHello World! Team Null"); 
+	MyStrcpy(msg.data,"Hello World! Team Null\n"); 
 	while(1){
 		cons_printf("0 ");
 		for(i=0; i<1666668; i++)IO_DELAY();
